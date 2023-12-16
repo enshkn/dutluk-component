@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown, Form, Col, Row, Button } from 'react-bootstrap';
 import CustomDatePicker from './CustomDatePicker';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -56,6 +56,101 @@ function TimeComponent() {
       setSelectedEndDate('');
     }
   };
+  const handleSubmitJSON = () => {
+    const options = { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    };
+
+    const options_day = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+
+
+    let new_selectedStartDate = null;
+    let new_selectedEndDate = null;
+    
+    if (selectedStartDate !== null && timeExpression === 'moment') {
+      new_selectedStartDate = new Intl.DateTimeFormat('tr-TR', options).format(selectedStartDate);
+      new_selectedStartDate = String(new_selectedStartDate);
+    }
+    if (selectedEndDate !== null && timeExpression === 'moment') {
+      new_selectedEndDate = new Intl.DateTimeFormat('tr-TR', options).format(selectedEndDate);
+      new_selectedEndDate = String(new_selectedEndDate);
+    }
+
+    if (selectedStartDate !== null && timeExpression === 'day') {
+      new_selectedStartDate = new Intl.DateTimeFormat('tr-TR', options_day).format(selectedStartDate);
+      new_selectedStartDate = String(new_selectedStartDate);
+    }
+    if (selectedEndDate !== null && timeExpression === 'day') {
+      new_selectedEndDate = new Intl.DateTimeFormat('tr-TR', options_day).format(selectedEndDate);
+      new_selectedEndDate = String(new_selectedEndDate);
+    }
+    
+
+    const data = {
+      timeExpression,
+      timeType,
+      selectedYearStart: selectedYearStart ? selectedYearStart : null,
+      selectedYearEnd: selectedYearStart ? selectedYearEnd : null,
+      selectedMonthStart: selectedMonthStart ? selectedMonthStart : null,
+      selectedMonthEnd: selectedMonthEnd ? selectedMonthEnd : null,
+      selectedSeasonStart: selectedSeasonStart ? selectedSeasonStart : null,
+      selectedSeasonEnd: selectedSeasonEnd ? selectedSeasonEnd : null,
+      selectedDecadeStart: selectedDecadeStart ? selectedDecadeStart : null,
+      selectedDecadeEnd: selectedDecadeEnd ? selectedDecadeEnd : null,
+      selectedStartDate: selectedStartDate ? selectedStartDate : null,
+      selectedEndDate: selectedEndDate ? selectedEndDate : null,
+      new_selectedStartDate: new_selectedStartDate ? new_selectedStartDate : null,
+      new_selectedEndDate: new_selectedEndDate ? new_selectedEndDate : null,
+      new_selectedStartDateType: new_selectedStartDate ? { value: new_selectedStartDate, type: typeof new_selectedStartDate } : null,
+      new_selectedEndDateType: new_selectedEndDate ? { value: new_selectedEndDate, type: typeof new_selectedEndDate } : null,
+
+      /*
+      selectedYearStartType: selectedYearStart ? { value: selectedYearStart, type: typeof selectedYearStart } : null,
+      selectedYearEndType: selectedYearStart ? { value: selectedYearEnd, type: typeof selectedYearEnd } : null,
+      selectedMonthStartType: selectedMonthStart ? { value: selectedMonthStart, type: typeof selectedMonthStart } : null,
+      selectedMonthEndType: selectedMonthEnd ? { value: selectedMonthEnd, type: typeof selectedMonthEnd } : null,
+      selectedSeasonStartType: selectedSeasonStart ? { value: selectedSeasonStart, type: typeof selectedSeasonStart } : null,
+      selectedSeasonEndType: selectedSeasonEnd ? { value: selectedSeasonEnd, type: typeof selectedSeasonEnd } : null,
+      selectedDecadeStartType: selectedDecadeStart ? { value: selectedDecadeStart, type: typeof selectedDecadeStart } : null,
+      selectedDecadeEndType: selectedDecadeEnd ? { value: selectedDecadeEnd, type: typeof selectedDecadeEnd } : null,
+      selectedStartDateType: selectedStartDate ? { value: selectedStartDate, type: typeof selectedStartDate } : null,
+      selectedEndDateType: selectedEndDate ? { value: selectedEndDate, type: typeof selectedEndDate } : null,
+      
+      */
+    };
+
+    console.log(new_selectedEndDate, new_selectedStartDate)
+    console.log("Data to send:", data);
+  };
+
+    // timeExpression veya timeType değiştiğinde formu sıfırla
+    useEffect(() => {
+      resetForm();
+    }, [timeExpression, timeType]);
+
+    // Formu sıfırlayan fonksiyon
+  const resetForm = () => {
+    setSelectedYearStart('');
+    setSelectedYearEnd('');
+    setSelectedMonthStart('');
+    setSelectedMonthEnd('');
+    setSelectedSeasonStart('');
+    setSelectedSeasonEnd('');
+    setSelectedDecadeStart('');
+    setSelectedDecadeEnd('');
+    setSelectedStartDate('');
+    setSelectedEndDate('');
+  };
+  
+
   const handleSubmit = () => {
     // Seçilen verileri console.log ile göster
     console.log("Selected Data:");
@@ -276,7 +371,7 @@ function TimeComponent() {
                     selectedYear={selectedYearStart}
                     selectedMonth={selectedMonthStart}
                     onChangeYear={(year) => handleYearStartChange(year)}
-                    onChangeMonth={(month) => handleMonthEndChange(month)}
+                    onChangeMonth={(month) => handleMonthStartChange(month)}
                   />
                 </Col>
                 <Col>
@@ -475,6 +570,12 @@ function TimeComponent() {
         <Row className="justify-content-center">
           <Col xs="auto">
           <Button variant="primary" onClick={handleSubmit}>Submit</Button>
+          </Col>
+        </Row>
+        <br></br>
+        <Row className="justify-content-center">
+          <Col xs="auto">
+          <Button variant="primary" onClick={handleSubmitJSON}>Submit JSON</Button>
           </Col>
         </Row>
       </div>

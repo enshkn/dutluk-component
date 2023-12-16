@@ -8,7 +8,8 @@ function CustomDatePicker({ selectedDate, onChange }) {
       selected={selectedDate}
       onChange={onChange}
       dateFormat="dd/MM/yyyy"
-      showTimeSelect={false} // Saati göstermemek için false yapabilirsiniz
+      showTimeSelect={false}
+      showTimeInput={false}
     />
   );
 }
